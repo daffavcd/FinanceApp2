@@ -55,8 +55,8 @@ class HomeState extends State<Home> {
           ),
           Expanded(
             child: GestureDetector(
-              onTap: () async {
-                await navigateToCategoryHome(context, null);
+              onTap: () {
+                navigateToCategoryHome(context, null);
               },
               child: Container(
                 color: Colors.white70,
@@ -99,7 +99,7 @@ class HomeState extends State<Home> {
 
   Future<Mymoney> navigateToCategoryHome(
       BuildContext context, Mymoney item) async {
-    var result = await Navigator.push(context,
+    var result = Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (BuildContext context) {
       return CategoryHome();
     }));

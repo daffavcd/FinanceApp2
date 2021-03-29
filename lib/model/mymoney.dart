@@ -25,7 +25,7 @@ class Mymoney {
 
   set amount(int value) => this._amount = value;
 
-  Mymoney(this._id, this._desc, this._categoryId, this._type, this._amount);
+  Mymoney(this._desc, this._categoryId, this._type, this._amount);
 
   Mymoney.fromMap(Map<String, dynamic> map) {
     this._id = map['id'];

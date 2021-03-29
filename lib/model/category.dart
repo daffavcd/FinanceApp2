@@ -6,11 +6,11 @@ class Category {
 
   set categoryId(int value) => this._categoryId = value;
 
-  get categoryName => this._categoryName;
+  String get categoryName => this._categoryName;
 
   set categoryName(value) => this._categoryName = value;
 
-  Category(this._categoryId, this._categoryName);
+  Category(this._categoryName);
 
   Category.fromMap(Map<String, dynamic> map) {
     this._categoryId = map['categoryId'];

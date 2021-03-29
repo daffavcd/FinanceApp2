@@ -1,11 +1,10 @@
 import 'package:flutter/material.dart';
 import 'package:sqflite/sqflite.dart';
+import 'package:uts/model/category.dart';
 import 'dart:async';
 
 import 'package:uts/model/dbhelper.dart';
-import 'package:uts/model/mymoney.dart';
-
-import 'entryFormMoney.dart';
+import 'package:uts/pages/entryFormCategory.dart';
 import 'home.dart';
 
 //pendukung program asinkron
@@ -18,7 +17,7 @@ class CategoryHomeState extends State<CategoryHome> {
   @override
   DbHelper dbHelper = DbHelper();
   int count = 0;
-  List<Mymoney> itemList;
+  List<Category> itemList;
   @override
   void initState() {
     super.initState();
@@ -27,7 +26,7 @@ class CategoryHomeState extends State<CategoryHome> {
 
   Widget build(BuildContext context) {
     if (itemList == null) {
-      itemList = List<Mymoney>();
+      itemList = List<Category>();
     }
     return Scaffold(
       appBar: AppBar(
@@ -37,8 +36,8 @@ class CategoryHomeState extends State<CategoryHome> {
         Row(children: <Widget>[
           Expanded(
             child: GestureDetector(
-              onTap: () async {
-                await navigateToHome(context, null);
+              onTap: () {
+                navigateToHome(context, null);
               },
               child: Container(
                 alignment: Alignment.center,
@@ -51,7 +50,7 @@ class CategoryHomeState extends State<CategoryHome> {
           ),
           Expanded(
             child: GestureDetector(
-              onTap: () async {
+              onTap: () {
                 print("Container clicked");
               },
               child: Container(
@@ -70,34 +69,39 @@ class CategoryHomeState extends State<CategoryHome> {
         Expanded(
           child: createListView(),
         ),
+        Container(
+          alignment: Alignment.bottomCenter,
+          child: SizedBox(
+            width: double.infinity,
+            child: RaisedButton(
+              child: Text("New Category"),
+              onPressed: () async {
+                var item = await navigateToEntryForm(context, null);
+                if (item != null) {
+                  int result = await dbHelper.insertCategory(item);
+                  if (result > 0) {
+                    updateListView();
+                  }
+                }
+              },
+            ),
+          ),
+        ),
       ]),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () async {
-          var item = await navigateToEntryForm(context, null);
-          if (item != null) {
-            int result = await dbHelper.insertMoney(item);
-            if (result > 0) {
-              updateListView();
-            }
-          }
-        },
-        tooltip: 'Increment',
-        child: Icon(Icons.add),
-      ),
     );
   }
 
-  Future<Mymoney> navigateToEntryForm(
-      BuildContext context, Mymoney item) async {
+  Future<Category> navigateToEntryForm(
+      BuildContext context, Category item) async {
     var result = await Navigator.push(context,
         MaterialPageRoute(builder: (BuildContext context) {
-      return EntryFormMoney(item);
+      return EntryFormCategory(item);
     }));
     return result;
   }
 
-  Future<Mymoney> navigateToHome(BuildContext context, Mymoney item) async {
-    var result = await Navigator.push(context,
+  Future<Category> navigateToHome(BuildContext context, Category item) async {
+    var result = Navigator.pushReplacement(context,
         MaterialPageRoute(builder: (BuildContext context) {
       return Home();
     }));
@@ -115,26 +119,18 @@ class CategoryHomeState extends State<CategoryHome> {
           child: ListTile(
             leading: CircleAvatar(
               backgroundColor: Colors.red,
-              child: Icon(Icons.ad_units),
+              child: Icon(Icons.inventory),
             ),
             title: Text(
-              this.itemList[index].desc,
+              this.itemList[index].categoryName,
               style: textStyle,
-            ),
-            subtitle: Text(this.itemList[index].amount.toString()),
-            trailing: GestureDetector(
-              child: Icon(Icons.delete),
-              onTap: () async {
-                //TODO 3 Panggil Fungsi untuk Delete dari DB berdasarkan Item
-                // Saya taruh di entry form pak button nya soalnya si UI tabrakan sama klik TODO 4
-              },
             ),
             onTap: () async {
               var item =
                   await navigateToEntryForm(context, this.itemList[index]);
-              //TODO 4 Panggil Fungsi untuk Edit data
+
               if (item != null) {
-                int result = await dbHelper.updateMoney(item);
+                int result = await dbHelper.updateCategory(item);
 
                 updateListView();
               }
@@ -149,8 +145,7 @@ class CategoryHomeState extends State<CategoryHome> {
   void updateListView() {
     final Future<Database> dbFuture = dbHelper.initDb();
     dbFuture.then((database) {
-      //TODO 1 Select data dari DB
-      Future<List<Mymoney>> itemListFuture = dbHelper.getItemList();
+      Future<List<Category>> itemListFuture = dbHelper.getCategoryList();
       itemListFuture.then((itemList) {
         setState(() {
           this.itemList = itemList;

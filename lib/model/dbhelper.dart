@@ -83,29 +83,30 @@ class DbHelper {
   //--------------------------------------------------- KATEGORIKU
   Future<List<Map<String, dynamic>>> selectCategory() async {
     Database db = await this.initDb();
-    var mapList = await db.query('category', orderBy: 'name');
+    var mapList = await db.query('category', orderBy: 'categoryName');
     return mapList;
   }
 
 //create databases
-  Future<int> insertCategory(Mymoney object) async {
+  Future<int> insertCategory(Category object) async {
     Database db = await this.initDb();
     int count = await db.insert('category', object.toMap());
     return count;
   }
 
 //update databases
-  Future<int> updateCategory(Mymoney object) async {
+  Future<int> updateCategory(Category object) async {
     Database db = await this.initDb();
     int count = await db.update('category', object.toMap(),
-        where: 'id=?', whereArgs: [object.id]);
+        where: 'categoryId=?', whereArgs: [object.categoryId]);
     return count;
   }
 
 //delete databases
   Future<int> deleteCategory(int id) async {
     Database db = await this.initDb();
-    int count = await db.delete('category', where: 'id=?', whereArgs: [id]);
+    int count =
+        await db.delete('category', where: 'categoryId=?', whereArgs: [id]);
     return count;
   }
 
