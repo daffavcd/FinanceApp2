@@ -4,17 +4,17 @@ import 'dart:async';
 
 import 'package:uts/model/dbhelper.dart';
 import 'package:uts/model/mymoney.dart';
-import 'package:uts/pages/categoryHome.dart';
 
 import 'entryFormMoney.dart';
+import 'home.dart';
 
 //pendukung program asinkron
-class Home extends StatefulWidget {
+class CategoryHome extends StatefulWidget {
   @override
-  HomeState createState() => HomeState();
+  CategoryHomeState createState() => CategoryHomeState();
 }
 
-class HomeState extends State<Home> {
+class CategoryHomeState extends State<CategoryHome> {
   @override
   DbHelper dbHelper = DbHelper();
   int count = 0;
@@ -37,33 +37,32 @@ class HomeState extends State<Home> {
         Row(children: <Widget>[
           Expanded(
             child: GestureDetector(
-              onTap: () {
-                print("Container clicked");
+              onTap: () async {
+                await navigateToHome(context, null);
               },
               child: Container(
                 alignment: Alignment.center,
+                color: Colors.white70,
                 child: Text("My Money",
                     style: TextStyle(fontSize: 17, color: Colors.black87)),
                 height: 50.0,
-                decoration: BoxDecoration(
-                    color: Colors.white70,
-                    border: Border(
-                      bottom: BorderSide(color: Colors.black87, width: 4),
-                    )),
               ),
             ),
           ),
           Expanded(
             child: GestureDetector(
               onTap: () async {
-                await navigateToCategoryHome(context, null);
+                print("Container clicked");
               },
               child: Container(
-                color: Colors.white70,
                 alignment: Alignment.center,
                 child: Text("Manage Category",
                     style: TextStyle(fontSize: 17, color: Colors.black87)),
                 height: 50.0,
+                decoration: BoxDecoration(
+                    border: Border(
+                  bottom: BorderSide(color: Colors.black87, width: 4),
+                )),
               ),
             ),
           ),
@@ -97,11 +96,10 @@ class HomeState extends State<Home> {
     return result;
   }
 
-  Future<Mymoney> navigateToCategoryHome(
-      BuildContext context, Mymoney item) async {
+  Future<Mymoney> navigateToHome(BuildContext context, Mymoney item) async {
     var result = await Navigator.push(context,
         MaterialPageRoute(builder: (BuildContext context) {
-      return CategoryHome();
+      return Home();
     }));
     return result;
   }
