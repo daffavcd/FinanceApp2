@@ -44,7 +44,7 @@ class DbHelper {
 //select databases
   Future<List<Map<String, dynamic>>> selectMoney() async {
     Database db = await this.initDb();
-    var mapList = await db.query('mymoney', orderBy: 'name');
+    var mapList = await db.query('mymoney', orderBy: 'id');
     return mapList;
   }
 

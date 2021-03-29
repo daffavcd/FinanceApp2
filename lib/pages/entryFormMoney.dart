@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:uts/model/category.dart';
 import 'package:uts/model/dbhelper.dart';
 import 'package:uts/model/mymoney.dart';
 
@@ -13,6 +14,8 @@ class EntryFormMoney extends StatefulWidget {
 class EntryFormMoneyState extends State<EntryFormMoney> {
   String dropdownValue = 'Income';
   DbHelper dbHelper = DbHelper();
+  // List<Category> categoriesList = dbHelper.getCategoryList();
+
   Mymoney mymoney;
   EntryFormMoneyState(this.mymoney);
   TextEditingController descController = TextEditingController();
@@ -22,6 +25,7 @@ class EntryFormMoneyState extends State<EntryFormMoney> {
   @override
   Widget build(BuildContext context) {
     //kondisi
+
     bool check = false;
     if (mymoney != null) {
       descController.text = mymoney.desc;
@@ -33,33 +37,51 @@ class EntryFormMoneyState extends State<EntryFormMoney> {
     //rubah
     return Scaffold(
         appBar: AppBar(
-          title: mymoney == null ? Text('Tambah') : Text('Ubah'),
+          title: mymoney == null
+              ? Text('Add New Transaction')
+              : Text('Edit Transaction'),
           leading: Icon(Icons.keyboard_arrow_left),
         ),
         body: Padding(
           padding: EdgeInsets.only(top: 15.0, left: 10.0, right: 10.0),
           child: ListView(
             children: <Widget>[
-              // nama
+              // Padding(
+              //   padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+              //   child: DropdownButton<String>(
+              //     isExpanded: true,
+              //     value: dropdownValue,
+              //     items: categoriesList.map((value) {
+              //       return new DropdownMenuItem<String>(
+              //         value: value.categoryId.toString(),
+              //         child: new Text(
+              //           value.categoryName,
+              //           style: TextStyle(fontSize: 18),
+              //         ),
+              //       );
+              //     }).toList(),
+              //     onChanged: (selectedItem) => setState(() {
+              //       dropdownValue = selectedItem;
+              //     }),
+              //   ),
+              // ),
               Padding(
                 padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
                 child: DropdownButton<String>(
+                  isExpanded: true,
                   value: dropdownValue,
-                  icon: const Icon(Icons.arrow_downward),
-                  iconSize: 24,
-                  elevation: 16,
-                  style: const TextStyle(color: Colors.deepPurple),
-                  underline: Container(
-                    height: 2,
-                    color: Colors.deepPurpleAccent,
-                  ),
-                  items: <String>['Income', 'Outcome']
-                      .map<DropdownMenuItem<String>>((String value) {
-                    return DropdownMenuItem<String>(
+                  items: <String>['Income', 'Outcome'].map((String value) {
+                    return new DropdownMenuItem<String>(
                       value: value,
-                      child: Text(value),
+                      child: new Text(
+                        value,
+                        style: TextStyle(fontSize: 18),
+                      ),
                     );
                   }).toList(),
+                  onChanged: (selectedItem) => setState(() {
+                    dropdownValue = selectedItem;
+                  }),
                 ),
               ),
               Padding(
@@ -68,7 +90,7 @@ class EntryFormMoneyState extends State<EntryFormMoney> {
                   controller: descController,
                   keyboardType: TextInputType.text,
                   decoration: InputDecoration(
-                    labelText: 'Nama Barang',
+                    labelText: 'Description',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0),
                     ),
@@ -85,7 +107,7 @@ class EntryFormMoneyState extends State<EntryFormMoney> {
                   controller: amountController,
                   keyboardType: TextInputType.number,
                   decoration: InputDecoration(
-                    labelText: 'Harga',
+                    labelText: 'Amount',
                     border: OutlineInputBorder(
                       borderRadius: BorderRadius.circular(5.0),
                     ),
@@ -111,12 +133,11 @@ class EntryFormMoneyState extends State<EntryFormMoney> {
                         ),
                         onPressed: () {
                           if (mymoney == null) {
-                            // tambah data
-                            // mymoney = Mymoney(
-                            // nameController.text,
-                            // int.parse(priceController.text),
-                            // codeController.text,
-                            // int.parse(qtyController.text));
+                            mymoney = Mymoney(
+                                descController.text,
+                                1,
+                                this.dropdownValue,
+                                int.parse(amountController.text));
                           } else {
                             // ubah data
                             // mymoney.code = codeController.text;

@@ -18,11 +18,25 @@ class HomeState extends State<Home> {
   @override
   DbHelper dbHelper = DbHelper();
   int count = 0;
+  int total_money = 0;
   List<Mymoney> itemList;
   @override
   void initState() {
     super.initState();
     updateListView();
+    cariTotalFirst();
+  }
+
+  void cariTotalFirst() {
+    setState(() {
+      for (var i = 1; i <= count; i++) {
+        if (this.itemList[i].type.toString() == 'Income') {
+          this.total_money += this.itemList[i].amount;
+        } else if (this.itemList[i].type.toString() == 'Outcome') {
+          this.total_money -= this.itemList[i].amount;
+        }
+      }
+    });
   }
 
   Widget build(BuildContext context) {
@@ -71,12 +85,37 @@ class HomeState extends State<Home> {
         Expanded(
           child: createListView(),
         ),
+        Container(
+          height: 70,
+          width: double.maxFinite,
+          decoration: BoxDecoration(
+              color: Colors.deepOrange[300],
+              borderRadius: BorderRadius.vertical(top: Radius.circular(10.0))),
+          child: Container(
+            alignment: Alignment.centerLeft,
+            padding: const EdgeInsets.only(
+              left: 20.0,
+              right: 20.0,
+            ),
+            child: Text("Balance : Rp. $total_money ,00",
+                style: TextStyle(fontSize: 22, color: Colors.black87)),
+          ),
+        )
       ]),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
           var item = await navigateToEntryForm(context, null);
           if (item != null) {
             int result = await dbHelper.insertMoney(item);
+            if (item.type == 'Income') {
+              setState(() {
+                this.total_money += item.amount;
+              });
+            } else {
+              setState(() {
+                this.total_money -= item.amount;
+              });
+            }
             if (result > 0) {
               updateListView();
             }
@@ -124,17 +163,10 @@ class HomeState extends State<Home> {
               style: textStyle,
             ),
             subtitle: Text(this.itemList[index].amount.toString()),
-            trailing: GestureDetector(
-              child: Icon(Icons.delete),
-              onTap: () async {
-                //TODO 3 Panggil Fungsi untuk Delete dari DB berdasarkan Item
-                // Saya taruh di entry form pak button nya soalnya si UI tabrakan sama klik TODO 4
-              },
-            ),
             onTap: () async {
               var item =
                   await navigateToEntryForm(context, this.itemList[index]);
-              //TODO 4 Panggil Fungsi untuk Edit data
+
               if (item != null) {
                 int result = await dbHelper.updateMoney(item);
 
@@ -151,7 +183,6 @@ class HomeState extends State<Home> {
   void updateListView() {
     final Future<Database> dbFuture = dbHelper.initDb();
     dbFuture.then((database) {
-      //TODO 1 Select data dari DB
       Future<List<Mymoney>> itemListFuture = dbHelper.getItemList();
       itemListFuture.then((itemList) {
         setState(() {
