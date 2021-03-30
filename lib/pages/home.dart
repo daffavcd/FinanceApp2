@@ -20,24 +20,31 @@ class HomeState extends State<Home> {
   int count = 0;
   int total_money = 0;
   List<Mymoney> itemList;
+
   @override
   void initState() {
     super.initState();
     updateListView();
-    // cariTotalFirst();
+    cariTotalFirst();
   }
 
-  // void cariTotalFirst() {
-  //   setState(() {
-  //     for (var i = 1; i <= count; i++) {
-  //       if (this.itemList[i].type.toString() == 'Income') {
-  //         this.total_money += this.itemList[i].amount;
-  //       } else if (this.itemList[i].type.toString() == 'Outcome') {
-  //         this.total_money -= this.itemList[i].amount;
-  //       }
-  //     }
-  //   });
-  // }
+  void cariTotalFirst() async {
+    final Future<Database> dbFuture = dbHelper.initDb();
+    dbFuture.then((database) {
+      Future<List<Mymoney>> itemListFuture = dbHelper.getItemList();
+      itemListFuture.then((itemList) {
+        setState(() {
+          for (var i = 0; i < itemList.length; i++) {
+            if (itemList[i].type.toString() == 'Income') {
+              total_money = total_money + itemList[i].amount;
+            } else if (itemList[i].type.toString() == 'Outcome') {
+              total_money = total_money - itemList[i].amount;
+            }
+          }
+        });
+      });
+    });
+  }
 
   Widget build(BuildContext context) {
     if (itemList == null) {
@@ -97,7 +104,7 @@ class HomeState extends State<Home> {
               left: 20.0,
               right: 20.0,
             ),
-            child: Text("Balance : Rp. $total_money ,00",
+            child: Text("Balance : Rp. $total_money,00",
                 style: TextStyle(fontSize: 22, color: Colors.black87)),
           ),
         )
@@ -107,15 +114,7 @@ class HomeState extends State<Home> {
           var item = await navigateToEntryForm(context, null);
           if (item != null) {
             int result = await dbHelper.insertMoney(item);
-            if (item.type == 'Income') {
-              setState(() {
-                this.total_money += item.amount;
-              });
-            } else {
-              setState(() {
-                this.total_money -= item.amount;
-              });
-            }
+            cariTotalFirst();
             if (result > 0) {
               updateListView();
             }
@@ -150,31 +149,59 @@ class HomeState extends State<Home> {
     return ListView.builder(
       itemCount: count,
       itemBuilder: (BuildContext context, int index) {
-        return Card(
-          color: Colors.white,
-          elevation: 2.0,
-          child: ListTile(
-            leading: CircleAvatar(
-              backgroundColor: Colors.red,
-              child: Icon(Icons.ad_units),
-            ),
-            title: Text(
-              this.itemList[index].desc.toString(),
-              style: textStyle,
-            ),
-            subtitle: Text(this.itemList[index].amount.toString()),
-            onTap: () async {
-              // var item =
-              //     await navigateToEntryForm(context, this.itemList[index]);
+        if (itemList[index].type == 'Income') {
+          return Card(
+            color: Colors.white,
+            elevation: 2.0,
+            child: ListTile(
+              leading: CircleAvatar(
+                backgroundColor: Colors.red,
+                child: Icon(Icons.arrow_back),
+              ),
+              title: Text(
+                "Rp." + this.itemList[index].amount.toString() + ",00",
+                style: textStyle,
+              ),
+              subtitle: Text(this.itemList[index].desc.toString()),
+              onTap: () async {
+                // var item =
+                //     await navigateToEntryForm(context, this.itemList[index]);
 
-              // if (item != null) {
-              //   int result = await dbHelper.updateMoney(item);
+                // if (item != null) {
+                //   int result = await dbHelper.updateMoney(item);
 
-              //   updateListView();
-              // }
-            },
-          ),
-        );
+                //   updateListView();
+                // }
+              },
+            ),
+          );
+        } else {
+          return Card(
+            color: Colors.white,
+            elevation: 2.0,
+            child: ListTile(
+              leading: CircleAvatar(
+                backgroundColor: Colors.red,
+                child: Icon(Icons.arrow_forward),
+              ),
+              title: Text(
+                "Rp." + this.itemList[index].amount.toString() + ",00",
+                style: textStyle,
+              ),
+              subtitle: Text(this.itemList[index].desc.toString()),
+              onTap: () async {
+                // var item =
+                //     await navigateToEntryForm(context, this.itemList[index]);
+
+                // if (item != null) {
+                //   int result = await dbHelper.updateMoney(item);
+
+                //   updateListView();
+                // }
+              },
+            ),
+          );
+        }
       },
     );
   }
