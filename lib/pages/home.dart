@@ -114,9 +114,9 @@ class HomeState extends State<Home> {
           var item = await navigateToEntryForm(context, null);
           if (item != null) {
             int result = await dbHelper.insertMoney(item);
-            cariTotalFirst();
             if (result > 0) {
               updateListView();
+              cariTotalFirst();
             }
           }
         },
