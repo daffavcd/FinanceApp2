@@ -24,20 +24,20 @@ class HomeState extends State<Home> {
   void initState() {
     super.initState();
     updateListView();
-    cariTotalFirst();
+    // cariTotalFirst();
   }
 
-  void cariTotalFirst() {
-    setState(() {
-      for (var i = 1; i <= count; i++) {
-        if (this.itemList[i].type.toString() == 'Income') {
-          this.total_money += this.itemList[i].amount;
-        } else if (this.itemList[i].type.toString() == 'Outcome') {
-          this.total_money -= this.itemList[i].amount;
-        }
-      }
-    });
-  }
+  // void cariTotalFirst() {
+  //   setState(() {
+  //     for (var i = 1; i <= count; i++) {
+  //       if (this.itemList[i].type.toString() == 'Income') {
+  //         this.total_money += this.itemList[i].amount;
+  //       } else if (this.itemList[i].type.toString() == 'Outcome') {
+  //         this.total_money -= this.itemList[i].amount;
+  //       }
+  //     }
+  //   });
+  // }
 
   Widget build(BuildContext context) {
     if (itemList == null) {

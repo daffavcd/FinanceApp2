@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:sqflite/sqflite.dart';
 import 'package:uts/model/category.dart';
 import 'package:uts/model/dbhelper.dart';
 import 'package:uts/model/mymoney.dart';
@@ -12,9 +13,26 @@ class EntryFormMoney extends StatefulWidget {
 
 //class controller
 class EntryFormMoneyState extends State<EntryFormMoney> {
+  String dropdownAtas;
   String dropdownValue = 'Income';
   DbHelper dbHelper = DbHelper();
-  // List<Category> categoriesList = dbHelper.getCategoryList();
+
+  int count = 0;
+  List<Category> itemList;
+
+  void get_option() async {
+    final Future<Database> dbFuture = dbHelper.initDb();
+    dbFuture.then((database) {
+      Future<List<Category>> itemListFuture = dbHelper.getCategoryList();
+      itemListFuture.then((itemList) {
+        setState(() {
+          this.itemList = itemList;
+          this.dropdownAtas = itemList[0].categoryId.toString();
+          this.count = itemList.length;
+        });
+      });
+    });
+  }
 
   Mymoney mymoney;
   EntryFormMoneyState(this.mymoney);
@@ -22,6 +40,11 @@ class EntryFormMoneyState extends State<EntryFormMoney> {
   TextEditingController categoryIdController = TextEditingController();
   TextEditingController typeController = TextEditingController();
   TextEditingController amountController = TextEditingController();
+  void initState() {
+    super.initState();
+    get_option();
+  }
+
   @override
   Widget build(BuildContext context) {
     //kondisi
@@ -46,25 +69,25 @@ class EntryFormMoneyState extends State<EntryFormMoney> {
           padding: EdgeInsets.only(top: 15.0, left: 10.0, right: 10.0),
           child: ListView(
             children: <Widget>[
-              // Padding(
-              //   padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
-              //   child: DropdownButton<String>(
-              //     isExpanded: true,
-              //     value: dropdownValue,
-              //     items: categoriesList.map((value) {
-              //       return new DropdownMenuItem<String>(
-              //         value: value.categoryId.toString(),
-              //         child: new Text(
-              //           value.categoryName,
-              //           style: TextStyle(fontSize: 18),
-              //         ),
-              //       );
-              //     }).toList(),
-              //     onChanged: (selectedItem) => setState(() {
-              //       dropdownValue = selectedItem;
-              //     }),
-              //   ),
-              // ),
+              Padding(
+                padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+                child: DropdownButton<String>(
+                  isExpanded: true,
+                  value: dropdownAtas,
+                  items: itemList.map((value) {
+                    return new DropdownMenuItem<String>(
+                      value: value.categoryId.toString(),
+                      child: new Text(
+                        value.categoryName,
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: (selectedItem) => setState(() {
+                    dropdownAtas = selectedItem;
+                  }),
+                ),
+              ),
               Padding(
                 padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
                 child: DropdownButton<String>(
