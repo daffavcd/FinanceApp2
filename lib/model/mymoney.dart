@@ -29,9 +29,9 @@ class Mymoney {
 
   Mymoney.fromMap(Map<String, dynamic> map) {
     this._id = map['id'];
-    this._desc = map['desc'];
     this._categoryId = map['categoryId'];
     this._type = map['type'];
+    this._desc = map['desc'];
     this._amount = map['amount'];
   }
 

@@ -158,7 +158,7 @@ class EntryFormMoneyState extends State<EntryFormMoney> {
                           if (mymoney == null) {
                             mymoney = Mymoney(
                                 descController.text,
-                                1,
+                                int.parse(this.dropdownAtas),
                                 this.dropdownValue,
                                 int.parse(amountController.text));
                           } else {

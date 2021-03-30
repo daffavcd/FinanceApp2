@@ -159,19 +159,19 @@ class HomeState extends State<Home> {
               child: Icon(Icons.ad_units),
             ),
             title: Text(
-              this.itemList[index].desc,
+              this.itemList[index].desc.toString(),
               style: textStyle,
             ),
             subtitle: Text(this.itemList[index].amount.toString()),
             onTap: () async {
-              var item =
-                  await navigateToEntryForm(context, this.itemList[index]);
+              // var item =
+              //     await navigateToEntryForm(context, this.itemList[index]);
 
-              if (item != null) {
-                int result = await dbHelper.updateMoney(item);
+              // if (item != null) {
+              //   int result = await dbHelper.updateMoney(item);
 
-                updateListView();
-              }
+              //   updateListView();
+              // }
             },
           ),
         );

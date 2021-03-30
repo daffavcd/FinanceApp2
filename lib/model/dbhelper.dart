@@ -28,7 +28,7 @@ class DbHelper {
  CREATE TABLE mymoney (
  id INTEGER PRIMARY KEY AUTOINCREMENT,
  desc TEXT,
- categoryId TEXT,
+ categoryId INTEGER,
  type TEXT,
  amount INTEGER
  )
