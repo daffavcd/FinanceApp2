@@ -73,25 +73,6 @@ class EntryFormMoneyState extends State<EntryFormMoney> {
                 padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
                 child: DropdownButton<String>(
                   isExpanded: true,
-                  value: dropdownAtas,
-                  items: itemList.map((value) {
-                    return new DropdownMenuItem<String>(
-                      value: value.categoryId.toString(),
-                      child: new Text(
-                        value.categoryName,
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    );
-                  }).toList(),
-                  onChanged: (selectedItem) => setState(() {
-                    dropdownAtas = selectedItem;
-                  }),
-                ),
-              ),
-              Padding(
-                padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
-                child: DropdownButton<String>(
-                  isExpanded: true,
                   value: dropdownValue,
                   items: <String>['Income', 'Outcome'].map((String value) {
                     return new DropdownMenuItem<String>(
@@ -104,6 +85,25 @@ class EntryFormMoneyState extends State<EntryFormMoney> {
                   }).toList(),
                   onChanged: (selectedItem) => setState(() {
                     dropdownValue = selectedItem;
+                  }),
+                ),
+              ),
+              Padding(
+                padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+                child: DropdownButton<String>(
+                  isExpanded: true,
+                  value: dropdownAtas,
+                  items: itemList.map((value) {
+                    return new DropdownMenuItem<String>(
+                      value: value.categoryId.toString(),
+                      child: new Text(
+                        value.categoryName,
+                        style: TextStyle(fontSize: 18),
+                      ),
+                    );
+                  }).toList(),
+                  onChanged: (selectedItem) => setState(() {
+                    dropdownAtas = selectedItem;
                   }),
                 ),
               ),

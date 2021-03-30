@@ -114,9 +114,17 @@ class HomeState extends State<Home> {
           var item = await navigateToEntryForm(context, null);
           if (item != null) {
             int result = await dbHelper.insertMoney(item);
+            if (item.type == 'Income') {
+              setState(() {
+                this.total_money += item.amount;
+              });
+            } else {
+              setState(() {
+                this.total_money -= item.amount;
+              });
+            }
             if (result > 0) {
               updateListView();
-              cariTotalFirst();
             }
           }
         },
