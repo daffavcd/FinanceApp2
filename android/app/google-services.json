@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "928676354341",
+    "project_id": "flutter-uas",
+    "storage_bucket": "flutter-uas.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:928676354341:android:caf2ca5d13d79d494aa2cc",
+        "android_client_info": {
+          "package_name": "com.example.uts"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "928676354341-pq09hj3b8fk76730djanp0op2oat97qm.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.uts",
+            "certificate_hash": "6b9fa7600294210e02a28e16fdf69683bb6f4b51"
+          }
+        },
+        {
+          "client_id": "928676354341-0ebt0s8bhcssg7m38rokpqksns1unncm.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC2Bo3X4kFxh8ndr7IOKnrSd9Lr04DYD40"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "928676354341-0ebt0s8bhcssg7m38rokpqksns1unncm.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
