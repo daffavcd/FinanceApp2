@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:uts/pages/sign_in.dart';
 
 import 'first_screen.dart';
+import 'home.dart';
 
 class LoginPage extends StatefulWidget {
   @override
@@ -38,7 +39,7 @@ class _LoginPageState extends State<LoginPage> {
             Navigator.of(context).push(
               MaterialPageRoute(
                 builder: (context) {
-                  return FirstScreen();
+                  return Home();
                 },
               ),
             );
