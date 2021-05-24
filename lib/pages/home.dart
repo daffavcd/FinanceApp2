@@ -5,8 +5,10 @@ import 'dart:async';
 import 'package:uts/model/dbhelper.dart';
 import 'package:uts/model/mymoney.dart';
 import 'package:uts/pages/categoryHome.dart';
+import 'package:uts/pages/sign_in.dart';
 
 import 'entryFormMoney.dart';
+import 'loginPage.dart';
 
 //pendukung program asinkron
 class Home extends StatefulWidget {
@@ -55,6 +57,46 @@ class HomeState extends State<Home> {
         title: Text('Finance App'),
       ),
       body: Column(children: [
+        Row(
+          children: <Widget>[
+            Expanded(
+              child: ListTile(
+                leading: Container(
+                    padding: new EdgeInsets.all(40.0),
+                    width: 50.0,
+                    height: 50.0,
+                    decoration: new BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: new DecorationImage(
+                          fit: BoxFit.fill,
+                          image: new NetworkImage(imageUrl),
+                        ))),
+                title: Text(
+                  email,
+                ),
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(right: 15.0),
+              child: RaisedButton(
+                color: Theme.of(context).primaryColorDark,
+                textColor: Theme.of(context).primaryColorLight,
+                child: Text(
+                  'Sign Out',
+                  textScaleFactor: 1,
+                ),
+                onPressed: () {
+                  signOutGoogle();
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginPage()),
+                    (Route<dynamic> route) => false,
+                  );
+                },
+              ),
+            )
+          ],
+        ),
         Row(children: <Widget>[
           Expanded(
             child: GestureDetector(

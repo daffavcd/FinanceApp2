@@ -6,6 +6,8 @@ import 'dart:async';
 import 'package:uts/model/dbhelper.dart';
 import 'package:uts/pages/entryFormCategory.dart';
 import 'home.dart';
+import 'loginPage.dart';
+import 'sign_in.dart';
 
 //pendukung program asinkron
 class CategoryHome extends StatefulWidget {
@@ -31,8 +33,49 @@ class CategoryHomeState extends State<CategoryHome> {
     return Scaffold(
       appBar: AppBar(
         title: Text('Finance App'),
+        backgroundColor: Color(0xff885566),
       ),
       body: Column(children: [
+        Row(
+          children: <Widget>[
+            Expanded(
+              child: ListTile(
+                leading: Container(
+                    padding: new EdgeInsets.all(40.0),
+                    width: 50.0,
+                    height: 50.0,
+                    decoration: new BoxDecoration(
+                        shape: BoxShape.circle,
+                        image: new DecorationImage(
+                          fit: BoxFit.fill,
+                          image: new NetworkImage(imageUrl),
+                        ))),
+                title: Text(
+                  email,
+                ),
+              ),
+            ),
+            Container(
+              margin: const EdgeInsets.only(right: 15.0),
+              child: RaisedButton(
+                color: Theme.of(context).primaryColorDark,
+                textColor: Theme.of(context).primaryColorLight,
+                child: Text(
+                  'Sign Out',
+                  textScaleFactor: 1,
+                ),
+                onPressed: () {
+                  signOutGoogle();
+                  Navigator.pushAndRemoveUntil(
+                    context,
+                    MaterialPageRoute(builder: (context) => LoginPage()),
+                    (Route<dynamic> route) => false,
+                  );
+                },
+              ),
+            )
+          ],
+        ),
         Row(children: <Widget>[
           Expanded(
             child: GestureDetector(

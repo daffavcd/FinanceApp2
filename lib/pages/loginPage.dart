@@ -36,12 +36,10 @@ class _LoginPageState extends State<LoginPage> {
       onPressed: () {
         signInWithGoogle().then((result) {
           if (result != null) {
-            Navigator.of(context).push(
-              MaterialPageRoute(
-                builder: (context) {
-                  return Home();
-                },
-              ),
+            Navigator.pushAndRemoveUntil(
+              context,
+              MaterialPageRoute(builder: (context) => Home()),
+              (Route<dynamic> route) => false,
             );
           }
         });
