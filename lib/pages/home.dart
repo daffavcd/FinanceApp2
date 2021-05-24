@@ -54,7 +54,9 @@ class HomeState extends State<Home> {
     }
     return Scaffold(
       appBar: AppBar(
-        title: Text('Finance App'),
+        title: Text('D-Moneyku Indonesia',
+            style: TextStyle(fontSize: 22, color: Colors.black87)),
+        backgroundColor: Colors.deepOrange[200],
       ),
       body: Column(children: [
         Row(

@@ -14,14 +14,31 @@ class _LoginPageState extends State<LoginPage> {
   Widget build(BuildContext context) {
     return Scaffold(
       body: Container(
-        color: Colors.white,
+        color: Colors.deepOrange[200],
         child: Center(
           child: Column(
             mainAxisSize: MainAxisSize.max,
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              FlutterLogo(size: 150),
-              SizedBox(height: 50),
+              Container(
+                child: Text("D-Moneyku Indonesia",
+                    style: TextStyle(
+                      fontSize: 30,
+                      color: Colors.black87,
+                      fontFamily: "OpenSansSemiBold",
+                    )),
+              ),
+              Container(
+                child: Text("Let's start our journey, shall we?",
+                    style: TextStyle(
+                      fontSize: 16,
+                      color: Colors.black87,
+                      fontFamily: "OpenSansLight",
+                    )),
+              ),
+              SizedBox(height: 25),
+              Image(image: AssetImage("assets/piggy.png"), width: 300.0),
+              SizedBox(height: 25),
               _signInButton(),
             ],
           ),
@@ -31,8 +48,9 @@ class _LoginPageState extends State<LoginPage> {
   }
 
   Widget _signInButton() {
-    return OutlineButton(
-      splashColor: Colors.grey,
+    return FlatButton(
+      color: Colors.white,
+      splashColor: Colors.orangeAccent,
       onPressed: () {
         signInWithGoogle().then((result) {
           if (result != null) {
@@ -44,24 +62,21 @@ class _LoginPageState extends State<LoginPage> {
           }
         });
       },
-      shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(40)),
-      highlightElevation: 0,
-      borderSide: BorderSide(color: Colors.grey),
       child: Padding(
-        padding: const EdgeInsets.fromLTRB(0, 10, 0, 10),
+        padding: new EdgeInsets.all(8),
         child: Row(
           mainAxisSize: MainAxisSize.min,
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            Image(image: AssetImage("assets/google_logo.png"), height: 35.0),
+            Image(image: AssetImage("assets/google_logo.png"), height: 25.0),
             Padding(
               padding: const EdgeInsets.only(left: 10),
               child: Text(
-                'Sign in with Google',
+                'Sign In',
                 style: TextStyle(
-                  fontSize: 20,
-                  color: Colors.grey,
-                ),
+                    fontSize: 20,
+                    color: Colors.black87,
+                    fontWeight: FontWeight.w400),
               ),
             )
           ],
