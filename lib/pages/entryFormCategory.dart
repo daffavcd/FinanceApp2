@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:uts/model/category.dart';
 import 'package:uts/model/dbhelper.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:uts/pages/sign_in.dart';
 
 class EntryFormCategory extends StatefulWidget {
   final Category category;
@@ -10,7 +12,10 @@ class EntryFormCategory extends StatefulWidget {
 }
 
 //class controller
+final FirebaseFirestore _firestore = FirebaseFirestore.instance;
+
 class EntryFormCategoryState extends State<EntryFormCategory> {
+  String userUid = uid;
   DbHelper dbHelper = DbHelper();
   Category category;
   EntryFormCategoryState(this.category);
@@ -61,6 +66,7 @@ class EntryFormCategoryState extends State<EntryFormCategory> {
                         ),
                         onPressed: () {
                           if (category == null) {
+                            addItem();
                             category = Category(
                               categoryNameController.text,
                             );
@@ -117,5 +123,18 @@ class EntryFormCategoryState extends State<EntryFormCategory> {
             ],
           ),
         ));
+  }
+
+  Future<void> addItem() async {
+    CollectionReference colectionsCategory =
+        FirebaseFirestore.instance.collection('Category');
+
+    colectionsCategory
+        .add({
+          'CategoryName': categoryNameController.text, // John Doe
+          'UserId': userUid
+        })
+        .then((value) => print("Item Added"))
+        .catchError((error) => print("Failed to add Item: $error"));
   }
 }
