@@ -139,15 +139,16 @@ class CategoryHomeState extends State<CategoryHome> {
                               style: Theme.of(context).textTheme.headline5,
                             ),
                             onTap: () async {
-                              var item = await navigateToEntryForm(
-                                  context, this.itemList[index]);
+                              print("Document keys:" + data.id);
+                              await navigateToEntryForm(
+                                  data['CategoryName'], data.id);
 
-                              if (item != null) {
-                                int result =
-                                    await dbHelper.updateCategory(item);
+                              // if (item != null) {
+                              // int result =
+                              //     await dbHelper.updateCategory(item);
 
-                                // updateListView();
-                              }
+                              // updateListView();
+                              // }
                             },
                           ),
                         );
@@ -163,7 +164,7 @@ class CategoryHomeState extends State<CategoryHome> {
             child: RaisedButton(
               child: Text("New Category"),
               onPressed: () async {
-                var item = await navigateToEntryForm(context, null);
+                var item = await navigateToEntryForm(null, null);
                 if (item != null) {
                   int result = await dbHelper.insertCategory(item);
                   if (result > 0) {
@@ -179,10 +180,10 @@ class CategoryHomeState extends State<CategoryHome> {
   }
 
   Future<Category> navigateToEntryForm(
-      BuildContext context, Category item) async {
+      String nameCategory, String idCategory) async {
     var result = await Navigator.push(context,
         MaterialPageRoute(builder: (BuildContext context) {
-      return EntryFormCategory(item);
+      return EntryFormCategory(nameCategory, idCategory);
     }));
     return result;
   }

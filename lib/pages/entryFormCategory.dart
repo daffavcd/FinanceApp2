@@ -5,10 +5,12 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uts/pages/sign_in.dart';
 
 class EntryFormCategory extends StatefulWidget {
-  final Category category;
-  EntryFormCategory(this.category);
+  final String categoryName;
+  final String categoryId;
+  EntryFormCategory(this.categoryName, this.categoryId);
   @override
-  EntryFormCategoryState createState() => EntryFormCategoryState(this.category);
+  EntryFormCategoryState createState() =>
+      EntryFormCategoryState(this.categoryName, this.categoryId);
 }
 
 //class controller
@@ -18,14 +20,22 @@ class EntryFormCategoryState extends State<EntryFormCategory> {
   String userUid = uid;
   DbHelper dbHelper = DbHelper();
   Category category;
-  EntryFormCategoryState(this.category);
+
+  String tempcategoryName;
+  String tempcategoryId;
+
+  EntryFormCategoryState(String categoryName, String categoryId) {
+    this.tempcategoryName = categoryName;
+    this.tempcategoryId = categoryId;
+  }
+
   TextEditingController categoryNameController = TextEditingController();
   @override
   Widget build(BuildContext context) {
     //kondisi
     bool check = false;
-    if (category != null) {
-      categoryNameController.text = category.categoryName;
+    if (tempcategoryId != null) {
+      categoryNameController.text = tempcategoryName;
       check = true;
     }
     //rubah
@@ -65,13 +75,14 @@ class EntryFormCategoryState extends State<EntryFormCategory> {
                           textScaleFactor: 1.5,
                         ),
                         onPressed: () {
-                          if (category == null) {
+                          if (tempcategoryId == null) {
                             addItem();
-                            category = Category(
-                              categoryNameController.text,
-                            );
+                            // category = Category(
+                            //   categoryNameController.text,
+                            // );
                           } else {
-                            category.categoryName = categoryNameController.text;
+                            updateItem();
+                            // category.categoryName = categoryNameController.text;
                           }
                           // kembali ke layar sebelumnya dengan membawa objek mymoney
                           Navigator.pop(context, category);
@@ -112,7 +123,8 @@ class EntryFormCategoryState extends State<EntryFormCategory> {
                             textScaleFactor: 1.5,
                           ),
                           onPressed: () {
-                            dbHelper.deleteCategory(category.categoryId);
+                            deleteItem();
+                            // dbHelper.deleteCategory(category.categoryId);
                             Navigator.pop(context, category);
                           },
                         ),
@@ -136,5 +148,27 @@ class EntryFormCategoryState extends State<EntryFormCategory> {
         })
         .then((value) => print("Item Added"))
         .catchError((error) => print("Failed to add Item: $error"));
+  }
+
+  Future<void> updateItem() async {
+    CollectionReference colectionsCategory =
+        FirebaseFirestore.instance.collection('Category');
+
+    colectionsCategory
+        .doc(tempcategoryId)
+        .update({'CategoryName': categoryNameController.text})
+        .then((value) => print("Item Updated"))
+        .catchError((error) => print("Failed to update Item: $error"));
+  }
+
+  Future<void> deleteItem() {
+    CollectionReference colectionsCategory =
+        FirebaseFirestore.instance.collection('Category');
+
+    return colectionsCategory
+        .doc(tempcategoryId)
+        .delete()
+        .then((value) => print("Item Deleted"))
+        .catchError((error) => print("Failed to delete Item: $error"));
   }
 }
