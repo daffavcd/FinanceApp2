@@ -8,6 +8,7 @@ import 'package:uts/pages/entryFormCategory.dart';
 import 'home.dart';
 import 'loginPage.dart';
 import 'sign_in.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
 
 //pendukung program asinkron
 class CategoryHome extends StatefulWidget {
@@ -18,15 +19,18 @@ class CategoryHome extends StatefulWidget {
 class CategoryHomeState extends State<CategoryHome> {
   @override
   DbHelper dbHelper = DbHelper();
+
   int count = 0;
   List<Category> itemList;
   @override
   void initState() {
     super.initState();
-    updateListView();
+    // updateListView();
   }
 
   Widget build(BuildContext context) {
+    CollectionReference categoryku =
+        FirebaseFirestore.instance.collection('Category');
     if (itemList == null) {
       itemList = List<Category>();
     }
@@ -111,7 +115,46 @@ class CategoryHomeState extends State<CategoryHome> {
           ),
         ]),
         Expanded(
-          child: createListView(),
+          child: StreamBuilder(
+            stream: categoryku
+                .orderBy('CategoryName', descending: true)
+                .snapshots(),
+            builder: (context, snapshot) {
+              return !snapshot.hasData
+                  ? Text('PLease Wait')
+                  : ListView.builder(
+                      itemCount: snapshot.data.docs.length,
+                      itemBuilder: (context, index) {
+                        DocumentSnapshot data = snapshot.data.docs[index];
+                        return Card(
+                          color: Colors.white,
+                          elevation: 2.0,
+                          child: ListTile(
+                            leading: CircleAvatar(
+                              backgroundColor: Colors.red,
+                              child: Icon(Icons.inventory),
+                            ),
+                            title: Text(
+                              data['CategoryName'],
+                              style: Theme.of(context).textTheme.headline5,
+                            ),
+                            onTap: () async {
+                              var item = await navigateToEntryForm(
+                                  context, this.itemList[index]);
+
+                              if (item != null) {
+                                int result =
+                                    await dbHelper.updateCategory(item);
+
+                                // updateListView();
+                              }
+                            },
+                          ),
+                        );
+                      },
+                    );
+            },
+          ),
         ),
         Container(
           alignment: Alignment.bottomCenter,
@@ -124,7 +167,7 @@ class CategoryHomeState extends State<CategoryHome> {
                 if (item != null) {
                   int result = await dbHelper.insertCategory(item);
                   if (result > 0) {
-                    updateListView();
+                    // updateListView();
                   }
                 }
               },
@@ -152,50 +195,50 @@ class CategoryHomeState extends State<CategoryHome> {
     return result;
   }
 
-  ListView createListView() {
-    TextStyle textStyle = Theme.of(context).textTheme.headline5;
-    return ListView.builder(
-      itemCount: count,
-      itemBuilder: (BuildContext context, int index) {
-        return Card(
-          color: Colors.white,
-          elevation: 2.0,
-          child: ListTile(
-            leading: CircleAvatar(
-              backgroundColor: Colors.red,
-              child: Icon(Icons.inventory),
-            ),
-            title: Text(
-              this.itemList[index].categoryName,
-              style: textStyle,
-            ),
-            onTap: () async {
-              var item =
-                  await navigateToEntryForm(context, this.itemList[index]);
+  // ListView createListView() {
+  //   TextStyle textStyle = Theme.of(context).textTheme.headline5;
+  //   return ListView.builder(
+  //     itemCount: count,
+  //     itemBuilder: (BuildContext context, int index) {
+  //       return Card(
+  //         color: Colors.white,
+  //         elevation: 2.0,
+  //         child: ListTile(
+  //           leading: CircleAvatar(
+  //             backgroundColor: Colors.red,
+  //             child: Icon(Icons.inventory),
+  //           ),
+  //           title: Text(
+  //             this.itemList[index].categoryName,
+  //             style: textStyle,
+  //           ),
+  //           onTap: () async {
+  //             var item =
+  //                 await navigateToEntryForm(context, this.itemList[index]);
 
-              if (item != null) {
-                int result = await dbHelper.updateCategory(item);
+  //             if (item != null) {
+  //               int result = await dbHelper.updateCategory(item);
 
-                updateListView();
-              }
-            },
-          ),
-        );
-      },
-    );
-  }
+  //               // updateListView();
+  //             }
+  //           },
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
 
-  //update List item
-  void updateListView() {
-    final Future<Database> dbFuture = dbHelper.initDb();
-    dbFuture.then((database) {
-      Future<List<Category>> itemListFuture = dbHelper.getCategoryList();
-      itemListFuture.then((itemList) {
-        setState(() {
-          this.itemList = itemList;
-          this.count = itemList.length;
-        });
-      });
-    });
-  }
+  // //update List item
+  // void updateListView() {
+  //   final Future<Database> dbFuture = dbHelper.initDb();
+  //   dbFuture.then((database) {
+  //     Future<List<Category>> itemListFuture = dbHelper.getCategoryList();
+  //     itemListFuture.then((itemList) {
+  //       setState(() {
+  //         this.itemList = itemList;
+  //         this.count = itemList.length;
+  //       });
+  //     });
+  //   });
+  // }
 }
