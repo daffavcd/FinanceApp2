@@ -29,6 +29,7 @@ class CategoryHomeState extends State<CategoryHome> {
   }
 
   Widget build(BuildContext context) {
+    String userUid = uid;
     CollectionReference categoryku =
         FirebaseFirestore.instance.collection('Category');
     if (itemList == null) {
@@ -118,6 +119,7 @@ class CategoryHomeState extends State<CategoryHome> {
           child: StreamBuilder(
             stream: categoryku
                 .orderBy('CategoryName', descending: true)
+                // .where('UserId', isEqualTo: userUid)
                 .snapshots(),
             builder: (context, snapshot) {
               return !snapshot.hasData

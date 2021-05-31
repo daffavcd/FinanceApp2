@@ -3,6 +3,8 @@ import 'package:sqflite/sqflite.dart';
 import 'package:uts/model/category.dart';
 import 'package:uts/model/dbhelper.dart';
 import 'package:uts/model/mymoney.dart';
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'sign_in.dart';
 
 class EntryFormMoney extends StatefulWidget {
   final Mymoney mymoney;
@@ -13,22 +15,36 @@ class EntryFormMoney extends StatefulWidget {
 
 //class controller
 class EntryFormMoneyState extends State<EntryFormMoney> {
+  String userUid = uid;
   String dropdownAtas;
   String dropdownValue = 'Income';
   DbHelper dbHelper = DbHelper();
 
   int count = 0;
   List<Category> itemList;
+  CollectionReference categoryku =
+      FirebaseFirestore.instance.collection('Category');
 
   void get_option() async {
-    final Future<Database> dbFuture = dbHelper.initDb();
-    dbFuture.then((database) {
-      Future<List<Category>> itemListFuture = dbHelper.getCategoryList();
-      itemListFuture.then((itemList) {
+    // final Future<Database> dbFuture = dbHelper.initDb();
+    // dbFuture.then((database) {
+    //   Future<List<Category>> itemListFuture = dbHelper.getCategoryList();
+    //   itemListFuture.then((itemList) {
+    //     setState(() {
+    //       this.itemList = itemList;
+    //       this.dropdownAtas = itemList[0].categoryId.toString();
+    //       this.count = itemList.length;
+    //     });
+    //   });
+    // });
+    categoryku
+        .orderBy('CategoryName', descending: true)
+        .limit(1)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
+      querySnapshot.docs.forEach((doc) {
         setState(() {
-          this.itemList = itemList;
-          this.dropdownAtas = itemList[0].categoryId.toString();
-          this.count = itemList.length;
+          this.dropdownAtas = doc.id;
         });
       });
     });
@@ -88,25 +104,53 @@ class EntryFormMoneyState extends State<EntryFormMoney> {
                   }),
                 ),
               ),
-              Padding(
-                padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
-                child: DropdownButton<String>(
-                  isExpanded: true,
-                  value: dropdownAtas,
-                  items: itemList.map((value) {
-                    return new DropdownMenuItem<String>(
-                      value: value.categoryId.toString(),
-                      child: new Text(
-                        value.categoryName,
-                        style: TextStyle(fontSize: 18),
-                      ),
-                    );
-                  }).toList(),
-                  onChanged: (selectedItem) => setState(() {
-                    dropdownAtas = selectedItem;
-                  }),
-                ),
+              StreamBuilder<QuerySnapshot>(
+                stream: categoryku
+                    .orderBy('CategoryName', descending: true)
+                    // .where('UserId', isEqualTo: userUid)
+                    .snapshots(),
+                builder: (context, snapshot) {
+                  return !snapshot.hasData
+                      ? Text('PLease Wait')
+                      : DropdownButton<String>(
+                          isExpanded: true,
+                          isDense: true,
+                          items:
+                              snapshot.data.docs.map((DocumentSnapshot docs) {
+                            return new DropdownMenuItem<String>(
+                              value: docs.id,
+                              child: new Text(
+                                docs["CategoryName"],
+                                style: TextStyle(fontSize: 18),
+                              ),
+                            );
+                          }).toList(),
+                          value: dropdownAtas,
+                          onChanged: (selectedItem) => setState(() {
+                            dropdownAtas = selectedItem;
+                          }),
+                        );
+                },
               ),
+              // Padding(
+              //   padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
+              //   child: DropdownButton<String>(
+              //     isExpanded: true,
+              //     value: dropdownAtas,
+              //     items: itemList.map((value) {
+              //       return new DropdownMenuItem<String>(
+              //         value: value.categoryId.toString(),
+              //         child: new Text(
+              //           value.categoryName,
+              //           style: TextStyle(fontSize: 18),
+              //         ),
+              //       );
+              //     }).toList(),
+              //     onChanged: (selectedItem) => setState(() {
+              //       dropdownAtas = selectedItem;
+              //     }),
+              //   ),
+              // ),
               Padding(
                 padding: EdgeInsets.only(top: 20.0, bottom: 20.0),
                 child: TextField(
@@ -156,6 +200,7 @@ class EntryFormMoneyState extends State<EntryFormMoney> {
                         ),
                         onPressed: () {
                           if (mymoney == null) {
+                            addItem();
                             mymoney = Mymoney(
                                 descController.text,
                                 int.parse(this.dropdownAtas),
@@ -218,5 +263,21 @@ class EntryFormMoneyState extends State<EntryFormMoney> {
             ],
           ),
         ));
+  }
+
+  Future<void> addItem() async {
+    CollectionReference colectionsCategory =
+        FirebaseFirestore.instance.collection('MyMoney');
+
+    colectionsCategory
+        .add({
+          'Amount': amountController.text, // John Doe
+          'CategoryId': dropdownAtas, // John Doe
+          'Desc': descController.text, // John Doe
+          'Type': dropdownValue, // John Doe/ John Doe
+          'UserId': userUid
+        })
+        .then((value) => print("Item Added"))
+        .catchError((error) => print("Failed to add Item: $error"));
   }
 }
