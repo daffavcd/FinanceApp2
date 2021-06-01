@@ -201,11 +201,12 @@ class EntryFormMoneyState extends State<EntryFormMoney> {
                         onPressed: () {
                           if (mymoney == null) {
                             addItem();
-                            mymoney = Mymoney(
-                                descController.text,
-                                int.parse(this.dropdownAtas),
-                                this.dropdownValue,
-                                int.parse(amountController.text));
+                            // mymoney = Mymoney(
+                            //     descController.text,
+                            //     int.parse(this.dropdownAtas),
+                            //     this.dropdownValue,
+                            //     int.parse(amountController.text));
+                            Navigator.pop(context);
                           } else {
                             // ubah data
                             // mymoney.code = codeController.text;
@@ -214,7 +215,6 @@ class EntryFormMoneyState extends State<EntryFormMoney> {
                             // mymoney.qty = int.parse(qtyController.text);
                           }
                           // kembali ke layar sebelumnya dengan membawa objek mymoney
-                          Navigator.pop(context, mymoney);
                         },
                       ),
                     ),
