@@ -3,6 +3,7 @@ import 'package:uts/model/category.dart';
 import 'package:uts/model/dbhelper.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:uts/pages/sign_in.dart';
+import 'package:uts/pages/home.dart';
 
 class EntryFormCategory extends StatefulWidget {
   final String categoryName;
@@ -170,5 +171,14 @@ class EntryFormCategoryState extends State<EntryFormCategory> {
         .delete()
         .then((value) => print("Item Deleted"))
         .catchError((error) => print("Failed to delete Item: $error"));
+
+    // CollectionReference colectionsMymoney =
+    //     FirebaseFirestore.instance.collection('MyMoney');
+
+    // return colectionsMymoney
+    //     .doc()
+    //     .update({'CategoryId': FieldValue.delete()})
+    //     .then((value) => print("My Money Deleted"))
+    //     .catchError((error) => print("Failed to delete My Money: $error"));
   }
 }

@@ -117,10 +117,7 @@ class CategoryHomeState extends State<CategoryHome> {
         ]),
         Expanded(
           child: StreamBuilder(
-            stream: categoryku
-                .orderBy('CategoryName', descending: true)
-                // .where('UserId', isEqualTo: userUid)
-                .snapshots(),
+            stream: categoryku.where('UserId', isEqualTo: userUid).snapshots(),
             builder: (context, snapshot) {
               return !snapshot.hasData
                   ? Text('PLease Wait')

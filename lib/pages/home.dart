@@ -23,6 +23,7 @@ class HomeState extends State<Home> {
   DbHelper dbHelper = DbHelper();
   int count = 0;
   int total_money;
+  String userUid = uid;
   List<Mymoney> itemList;
   CollectionReference mymoneyku =
       FirebaseFirestore.instance.collection('MyMoney');
@@ -50,7 +51,10 @@ class HomeState extends State<Home> {
     //   });
     // });
     total_money = 0;
-    mymoneyku.get().then((QuerySnapshot querySnapshot) {
+    mymoneyku
+        .where('UserId', isEqualTo: userUid)
+        .get()
+        .then((QuerySnapshot querySnapshot) {
       querySnapshot.docs.forEach((doc) {
         setState(() {
           if (doc['Type'] == 'Income') {
@@ -152,7 +156,7 @@ class HomeState extends State<Home> {
           child: StreamBuilder(
             stream: mymoneyku
                 // .orderBy('id', descending: true)
-                // .where('UserId', isEqualTo: userUid)
+                .where('UserId', isEqualTo: userUid)
                 .snapshots(),
             builder: (context, snapshot) {
               return !snapshot.hasData
