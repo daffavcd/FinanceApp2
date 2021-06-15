@@ -180,14 +180,13 @@ class HomeState extends State<Home> {
                               ),
                               subtitle: Text(data['Desc'].toString()),
                               onTap: () async {
-                                // var item =
-                                //     await navigateToEntryForm(context, this.itemList[index]);
-
-                                // if (item != null) {
-                                //   int result = await dbHelper.updateMoney(item);
-
-                                //   updateListView();
-                                // }
+                                await navigateToEntryForm(
+                                    data.id,
+                                    data['Type'],
+                                    data['CategoryId'],
+                                    data['Desc'],
+                                    data['Amount']);
+                                cariTotalFirst();
                               },
                             ),
                           );
@@ -206,14 +205,13 @@ class HomeState extends State<Home> {
                               ),
                               subtitle: Text(data['Desc'].toString()),
                               onTap: () async {
-                                // var item =
-                                //     await navigateToEntryForm(context, this.itemList[index]);
-
-                                // if (item != null) {
-                                //   int result = await dbHelper.updateMoney(item);
-
-                                //   updateListView();
-                                // }
+                                await navigateToEntryForm(
+                                    data.id,
+                                    data['Type'],
+                                    data['CategoryId'],
+                                    data['Desc'],
+                                    data['Amount']);
+                                cariTotalFirst();
                               },
                             ),
                           );
@@ -242,7 +240,7 @@ class HomeState extends State<Home> {
       ]),
       floatingActionButton: FloatingActionButton(
         onPressed: () async {
-          var item = await navigateToEntryForm(context, null);
+          var item = await navigateToEntryForm(null, null, null, null, null);
           if (item != null) {
             // int result = await dbHelper.insertMoney(item);
             // if (item.type == 'Income') {
@@ -265,11 +263,11 @@ class HomeState extends State<Home> {
     );
   }
 
-  Future<Mymoney> navigateToEntryForm(
-      BuildContext context, Mymoney item) async {
+  Future<Mymoney> navigateToEntryForm(String id, String type, String categoryId,
+      String desc, String amount) async {
     var result = await Navigator.push(context,
         MaterialPageRoute(builder: (BuildContext context) {
-      return EntryFormMoney(item);
+      return EntryFormMoney(id, type, categoryId, desc, amount);
     }));
     return result;
   }

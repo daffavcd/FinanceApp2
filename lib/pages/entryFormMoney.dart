@@ -7,10 +7,15 @@ import 'package:cloud_firestore/cloud_firestore.dart';
 import 'sign_in.dart';
 
 class EntryFormMoney extends StatefulWidget {
-  final Mymoney mymoney;
-  EntryFormMoney(this.mymoney);
+  final String id;
+  final String type;
+  final String categoryId;
+  final String desc;
+  final String amount;
+  EntryFormMoney(this.id, this.type, this.categoryId, this.desc, this.amount);
   @override
-  EntryFormMoneyState createState() => EntryFormMoneyState(this.mymoney);
+  EntryFormMoneyState createState() => EntryFormMoneyState(
+      this.id, this.type, this.categoryId, this.desc, this.amount);
 }
 
 //class controller
@@ -19,6 +24,21 @@ class EntryFormMoneyState extends State<EntryFormMoney> {
   String dropdownAtas;
   String dropdownValue = 'Income';
   DbHelper dbHelper = DbHelper();
+
+  String tempid;
+  String temptype;
+  String tempcategoryId;
+  String tempdesc;
+  String tempamount;
+
+  EntryFormMoneyState(
+      String id, String type, String categoryId, String desc, String amount) {
+    this.tempid = id;
+    this.temptype = type;
+    this.tempcategoryId = categoryId;
+    this.tempdesc = desc;
+    this.tempamount = amount;
+  }
 
   int count = 0;
   List<Category> itemList;
@@ -51,7 +71,6 @@ class EntryFormMoneyState extends State<EntryFormMoney> {
   }
 
   Mymoney mymoney;
-  EntryFormMoneyState(this.mymoney);
   TextEditingController descController = TextEditingController();
   TextEditingController categoryIdController = TextEditingController();
   TextEditingController typeController = TextEditingController();
@@ -66,11 +85,11 @@ class EntryFormMoneyState extends State<EntryFormMoney> {
     //kondisi
 
     bool check = false;
-    if (mymoney != null) {
-      descController.text = mymoney.desc;
-      categoryIdController.text = mymoney.categoryId.toString();
-      typeController.text = mymoney.type.toString();
-      amountController.text = mymoney.amount.toString();
+    if (tempcategoryId != null) {
+      dropdownValue = temptype;
+      this.dropdownAtas = tempcategoryId;
+      descController.text = tempdesc;
+      amountController.text = tempamount;
       check = true;
     }
     //rubah
@@ -199,21 +218,16 @@ class EntryFormMoneyState extends State<EntryFormMoney> {
                           textScaleFactor: 1.5,
                         ),
                         onPressed: () {
-                          if (mymoney == null) {
+                          if (tempid == null) {
                             addItem();
-                            // mymoney = Mymoney(
-                            //     descController.text,
-                            //     int.parse(this.dropdownAtas),
-                            //     this.dropdownValue,
-                            //     int.parse(amountController.text));
-                            Navigator.pop(context);
+                            // category = Category(
+                            //   categoryNameController.text,
+                            // );
                           } else {
-                            // ubah data
-                            // mymoney.code = codeController.text;
-                            // mymoney.name = nameController.text;
-                            // mymoney.price = int.parse(priceController.text);
-                            // mymoney.qty = int.parse(qtyController.text);
+                            updateItem();
+                            // category.categoryName = categoryNameController.text;
                           }
+                          Navigator.pop(context, mymoney);
                           // kembali ke layar sebelumnya dengan membawa objek mymoney
                         },
                       ),
@@ -252,7 +266,7 @@ class EntryFormMoneyState extends State<EntryFormMoney> {
                             textScaleFactor: 1.5,
                           ),
                           onPressed: () {
-                            dbHelper.deleteMoney(mymoney.id);
+                            deleteItem();
                             Navigator.pop(context, mymoney);
                           },
                         ),
@@ -279,5 +293,32 @@ class EntryFormMoneyState extends State<EntryFormMoney> {
         })
         .then((value) => print("Item Added"))
         .catchError((error) => print("Failed to add Item: $error"));
+  }
+
+  Future<void> updateItem() async {
+    CollectionReference colectionsCategory =
+        FirebaseFirestore.instance.collection('MyMoney');
+
+    colectionsCategory
+        .doc(tempid)
+        .update({
+          'Amount': amountController.text,
+          'CategoryId': dropdownAtas,
+          'Desc': descController.text,
+          'Type': dropdownValue
+        })
+        .then((value) => print("Item Updated"))
+        .catchError((error) => print("Failed to update Item: $error"));
+  }
+
+  Future<void> deleteItem() {
+    CollectionReference colectionsCategory =
+        FirebaseFirestore.instance.collection('MyMoney');
+
+    return colectionsCategory
+        .doc(tempid)
+        .delete()
+        .then((value) => print("Item Deleted"))
+        .catchError((error) => print("Failed to delete Item: $error"));
   }
 }
