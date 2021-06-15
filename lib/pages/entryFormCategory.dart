@@ -165,20 +165,30 @@ class EntryFormCategoryState extends State<EntryFormCategory> {
   Future<void> deleteItem() {
     CollectionReference colectionsCategory =
         FirebaseFirestore.instance.collection('Category');
+    deletemymoneyiitem();
 
     return colectionsCategory
         .doc(tempcategoryId)
         .delete()
         .then((value) => print("Item Deleted"))
         .catchError((error) => print("Failed to delete Item: $error"));
+  }
 
-    // CollectionReference colectionsMymoney =
-    //     FirebaseFirestore.instance.collection('MyMoney');
-
-    // return colectionsMymoney
-    //     .doc()
-    //     .update({'CategoryId': FieldValue.delete()})
-    //     .then((value) => print("My Money Deleted"))
-    //     .catchError((error) => print("Failed to delete My Money: $error"));
+  Future<void> deletemymoneyiitem() {
+    return FirebaseFirestore.instance
+        .collection("MyMoney")
+        .where("CategoryId", isEqualTo: tempcategoryId)
+        .get()
+        .then((value) {
+      value.docs.forEach((element) {
+        FirebaseFirestore.instance
+            .collection("MyMoney")
+            .doc(element.id)
+            .delete()
+            .then((value) {
+          print("Success!");
+        });
+      });
+    });
   }
 }

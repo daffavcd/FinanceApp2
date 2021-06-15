@@ -58,7 +58,8 @@ class EntryFormMoneyState extends State<EntryFormMoney> {
     //   });
     // });
     categoryku
-        .orderBy('CategoryName', descending: true)
+        // .orderBy('CategoryName', descending: true)
+        .where('UserId', isEqualTo: userUid)
         .limit(1)
         .get()
         .then((QuerySnapshot querySnapshot) {
@@ -75,27 +76,28 @@ class EntryFormMoneyState extends State<EntryFormMoney> {
   TextEditingController categoryIdController = TextEditingController();
   TextEditingController typeController = TextEditingController();
   TextEditingController amountController = TextEditingController();
+  bool check = false;
   void initState() {
     super.initState();
-    get_option();
+    if (tempcategoryId != null) {
+      dropdownValue = temptype;
+      dropdownAtas = tempcategoryId;
+      descController.text = tempdesc;
+      amountController.text = tempamount;
+      check = true;
+    } else {
+      get_option();
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     //kondisi
 
-    bool check = false;
-    if (tempcategoryId != null) {
-      dropdownValue = temptype;
-      this.dropdownAtas = tempcategoryId;
-      descController.text = tempdesc;
-      amountController.text = tempamount;
-      check = true;
-    }
     //rubah
     return Scaffold(
         appBar: AppBar(
-          title: mymoney == null
+          title: tempcategoryId == null
               ? Text('Add New Transaction')
               : Text('Edit Transaction'),
           leading: Icon(Icons.keyboard_arrow_left),
@@ -119,7 +121,7 @@ class EntryFormMoneyState extends State<EntryFormMoney> {
                     );
                   }).toList(),
                   onChanged: (selectedItem) => setState(() {
-                    dropdownValue = selectedItem;
+                    this.dropdownValue = selectedItem;
                   }),
                 ),
               ),
@@ -146,7 +148,7 @@ class EntryFormMoneyState extends State<EntryFormMoney> {
                           }).toList(),
                           value: dropdownAtas,
                           onChanged: (selectedItem) => setState(() {
-                            dropdownAtas = selectedItem;
+                            this.dropdownAtas = selectedItem;
                           }),
                         );
                 },
